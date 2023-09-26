@@ -1,0 +1,55 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+const posts = (await getCollection('blog')).sort((a, b) => {
+	return b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+});
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header title={SITE_TITLE} />
+		<main>
+			<h1 class="text-2xl text-center font-semibold mb-5">Bienvenidos al Multiverso de Marvel</h1>
+			<p class="mb-10">
+				En el Sitio encontraras las ultimas noticias del universo Marvel, ademas de informacion sobre las peliculas y series de Marvel.
+			</p>
+			<h2 class="text-2xl mb-4">
+				Ultimas noticias
+			</h2>
+
+			<section>
+				<ul>
+					{
+						posts.slice(0, 2).map((post) => (
+							<li class="mb-10">
+								<a href={`/blog/${post.slug}/`}>
+									<img width={720} height={360} src={post.data.heroImage} alt="" />
+									<h4 class="title">{post.data.title}</h4>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+			<div class="flex justify-end">
+				<a href="/blog">
+					Mas Noticias...
+				</a>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
